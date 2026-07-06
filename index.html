@@ -1,0 +1,1397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polski — уроки и тренажёр</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Polski">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1f2430; --line:#2a3140;
+    --text:#e8ecf3; --muted:#9aa4b6; --accent:#d11d2a; --accent2:#e5414d;
+    --good:#2ec28a; --warn:#e7b549; --blue:#4d8df0; --white:#f4f6fb;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, #1b2030 0%, var(--bg) 60%);
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 60px}
+  header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+  .flag{width:30px;height:20px;border-radius:4px;overflow:hidden;display:inline-block;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .flag i{display:block;height:50%}
+  .flag .w{background:#fff} .flag .r{background:var(--accent)}
+  h1{font-size:18px;margin:0}
+  .sub{color:var(--muted);font-size:12.5px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 10px;text-align:center}
+  .stat .v{font-size:22px;font-weight:800}
+  .stat .l{font-size:11px;color:var(--muted);margin-top:3px}
+  .stat .v.flame{color:var(--warn)} .stat .v.mast{color:var(--good)}
+  .bar{height:10px;background:var(--panel2);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--good),#37d39b);width:0%}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .muted{color:var(--muted)}
+  .days{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+  .day{flex:1;min-width:60px;text-align:center;padding:9px 4px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:12px}
+  .day b{display:block;font-size:13px}
+  .day.done{border-color:var(--good);background:rgba(46,194,138,.12)}
+  .day.active{border-color:var(--blue);background:rgba(77,141,240,.12)}
+  .day small{color:var(--muted)}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:12px;padding:13px 16px;font-size:15px;font-weight:600;transition:transform .05s, filter .15s}
+  button:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;width:100%}
+  .btn-primary:hover{filter:brightness(1.07)}
+  .btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn-ghost:hover{filter:brightness(1.12)}
+  .center{text-align:center}
+  /* drill */
+  .progress-thin{height:6px;background:var(--panel2);border-radius:6px;overflow:hidden;margin-bottom:16px}
+  .progress-thin > i{display:block;height:100%;background:var(--blue);width:0%;transition:width .3s}
+  .prompt{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+  .term{font-size:34px;font-weight:800;line-height:1.15;margin:6px 0}
+  .hint{color:var(--muted);font-size:15px;margin-top:6px}
+  .answer{font-size:24px;font-weight:700;color:var(--good);margin-top:14px}
+  .ex{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;color:var(--muted)}
+  .ex b{color:var(--text);font-weight:600}
+  .speak{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:7px 13px}
+  .opts{display:grid;gap:10px;margin-top:18px}
+  .opt{background:var(--panel2);border:1px solid var(--line);color:var(--text);text-align:left;font-weight:500}
+  .opt:hover{border-color:var(--blue)}
+  .opt.correct{border-color:var(--good);background:rgba(46,194,138,.15)}
+  .opt.wrong{border-color:var(--accent);background:rgba(209,29,42,.15)}
+  input.type{width:100%;padding:14px;font-size:20px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);margin-top:16px;text-align:center}
+  input.type:focus{outline:none;border-color:var(--blue)}
+  .grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+  .grade{font-size:13px;padding:12px 6px}
+  .g-again{background:#3a2330;color:#ff9aa6;border:1px solid #5a2f3f}
+  .g-hard{background:#3a3320;color:#f0d089;border:1px solid #5a4f2f}
+  .g-good{background:#1f3a2c;color:#8fe7bf;border:1px solid #2f5a44}
+  .g-easy{background:#1f2f3a;color:#9ccaff;border:1px solid #2f475a}
+  .feedback{margin-top:12px;font-size:14px}
+  .ok{color:var(--good)} .bad{color:var(--accent2)}
+  .dialog{margin-top:6px}
+  .line{display:flex;gap:8px;margin:9px 0;align-items:flex-start}
+  .line .who{width:18px;flex:0 0 18px;color:var(--muted);font-weight:700}
+  .line .pl{font-weight:600}
+  .line .ru{color:var(--muted);font-size:13px}
+  .mission{background:rgba(77,141,240,.1);border:1px solid #2f4a6a;border-radius:14px;padding:14px;margin-top:14px}
+  .mission b{color:var(--blue)}
+  .tag{display:inline-block;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:3px 10px;margin-bottom:8px}
+  .summary .big{font-size:40px;font-weight:800;text-align:center}
+  .summary .em{font-size:30px;text-align:center;margin:6px 0 2px}
+  .links{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .links a{color:var(--blue);text-decoration:none}
+  .hidden{display:none}
+  .toolbar{display:flex;gap:8px;margin-top:8px}
+  .toolbar button{flex:1}
+  .smallbtn{padding:9px 12px;font-size:13px}
+  .word-of-day{font-size:13px;color:var(--muted)}
+  .word-of-day b{color:var(--text)}
+  .note{font-size:12px;color:var(--muted);margin-top:10px}
+  .calgrid{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
+  .cal{aspect-ratio:1/1;border-radius:4px;background:var(--panel2);border:1px solid var(--line)}
+  .cal.on{background:var(--good);border-color:var(--good)}
+  .cal.today{outline:2px solid var(--blue);outline-offset:1px}
+  .skillrow{padding:11px 0;border-bottom:1px solid var(--line)}
+  .skillrow:last-child{border:none}
+  .skillhead{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+  .hdr-tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  body.light{--bg:#eef1f7;--panel:#ffffff;--panel2:#f3f5fa;--line:#d7deea;--text:#15233a;--muted:#5b6678;--white:#15233a;background:radial-gradient(1200px 600px at 50% -10%, #e4e9f4 0%, var(--bg) 60%)}
+  body.light .stat,body.light .day,body.light .opt{box-shadow:0 1px 2px rgba(20,35,58,.05)}
+  #ttsPop{position:fixed;z-index:9999}
+  #ttsPop #ttsBtn{background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;border:none;border-radius:20px;padding:8px 13px;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}
+  #ttsPop #ttsBtn:hover{filter:brightness(1.08)}
+</style>
+<style>
+  /* ==== вкладки + уроки (PWA) ==== */
+  nav.tabs{display:flex;gap:8px;margin-bottom:16px}
+  nav.tabs button{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:14.5px;padding:12px}
+  nav.tabs button.on{background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;border-color:transparent}
+  .lesson-item{display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .lesson-item .info{flex:1}
+  .lesson-item .title{font-weight:700;font-size:16px}
+  .lesson-item .meta{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .lesson-item .st{font-size:20px;flex:0 0 auto}
+  .step-title{font-size:19px;font-weight:800;margin:6px 0 10px}
+  .theory{font-size:15px;line-height:1.6}
+  .theory p{margin:9px 0}
+  .theory table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  .theory th,.theory td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  .theory th{background:var(--panel2)}
+  .plspk{color:var(--blue);font-weight:600;cursor:pointer}
+  .plspk:hover{text-decoration:underline}
+  .plspk:after{content:" \1F50A";font-size:11px}
+  .micbtn{background:linear-gradient(180deg,#5a9bff,#3b78d8);color:#fff;width:100%;margin-top:14px}
+  .recres{margin-top:12px;padding:12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:14.5px}
+  .lesson-goal{background:rgba(77,141,240,.1);border:1px solid #2f4a6a;border-radius:12px;padding:11px 13px;font-size:13.5px;margin-top:10px}
+  .srsline{padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .srsline:last-child{border:none}
+  .stephead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .stephead .muted{font-size:12px}
+  .exitbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:4px 8px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="flag"><i class="w"></i><i class="r"></i></span>
+      <div>
+        <h1>Polski — уроки и тренажёр</h1>
+        <div class="sub">SRS каждый день · уроки Пн/Ср/Пт · среда = Варшава</div>
+      </div>
+    </div>
+    <div class="hdr-tools">
+      <button class="btn-ghost smallbtn" id="mapBtn" title="Карта курса">🗺</button>
+      <button class="btn-ghost smallbtn" id="themeBtn" title="Светлая / тёмная тема">🌙</button>
+      <button class="btn-ghost smallbtn" id="expBtn" title="Сохранить прогресс в файл">⬇</button>
+      <button class="btn-ghost smallbtn" id="impBtn" title="Загрузить прогресс из файла">⬆</button>
+      <button class="btn-ghost smallbtn" id="resetBtn" title="Сбросить прогресс">⟳</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button id="tabTrainer" class="on">🃏 Тренажёр</button>
+    <button id="tabLessons">📖 Уроки</button>
+    <button id="tabSobes">🎓 Собес</button>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><div class="v flame" id="sStreak">0</div><div class="l">🔥 стрик, дней</div></div>
+        <div class="stat"><div class="v" id="sNew">0/18</div><div class="l">новых сегодня</div></div>
+        <div class="stat"><div class="v mast" id="sMast">0</div><div class="l">освоено слов</div></div>
+        <div class="stat"><div class="v" id="sDue">0</div><div class="l">к повтору</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row"><b>📅 Стрик-календарь</b><span class="muted">🔥 <b id="calStreak">0</b> · рекорд <b id="calBest">0</b></span></div>
+      <div class="calgrid" id="calGrid" style="margin-top:12px"></div>
+      <div class="note">Каждый квадрат — день. Закрашенные зелёным — когда занимался (последние 4 недели).</div>
+    </div>
+
+    <div class="card">
+      <div class="row"><b>Прогресс курса</b><span class="muted" id="weekPct">0 / 130</span></div>
+      <div class="bar" style="margin-top:10px"><i id="weekBar"></i></div>
+      <div class="days" id="daysRow"></div>
+    </div>
+
+    <div class="card">
+      <div class="tag" id="todayTag">Сегодня</div>
+      <div id="todayTitle" style="font-size:18px;font-weight:700"></div>
+      <div class="word-of-day" id="todayDesc" style="margin-top:6px"></div>
+      <div class="toolbar">
+        <button class="btn-primary" id="startBtn">Тренировка слов (30 мин)</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn-ghost smallbtn" id="minBtn">Плохой день · только повтор</button>
+        <button class="btn-ghost smallbtn" id="missionBtn">Миссия дня</button>
+      </div>
+      <div class="note" id="audioNote"></div>
+      <div class="note">🔊 Выдели мышкой любое польское слово или фразу — появится кнопка «Прослушать». Слово из устойчивого выражения озвучится целиком.</div>
+    </div>
+
+    <div class="card">
+      <div class="row"><b>🎯 Практика</b><span class="muted">режимы отработки</span></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 4px">Конструктор фразы, перевод в обе стороны, аудирование, говорение, пары, пропуски — поверх выбранной колоды.</div>
+      <div class="toolbar"><button class="btn-primary" id="openPracticeBtn">Открыть практику →</button></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><b>🗓 Программа месяца</b><span class="muted" id="progHomeStat">0/28</span></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 4px">4 недели с планом на каждый день (30 мин): уроки Пн/Ср/Пт, повтор и практика по будням, ревизия в воскресенье.</div>
+      <div class="toolbar"><button class="btn-ghost" id="openProgramBtn">Открыть программу →</button></div>
+    </div>
+
+    <div class="card links">
+      <b style="color:var(--text)">Опора недели:</b><br>
+      Курс «Польски Вайб» (онлайн) · офлайн-школа (в поиске) · видео
+      <a href="https://www.youtube.com/@polishwithblondes" target="_blank">@polishwithblondes</a>,
+      <a href="https://www.youtube.com/easypolish" target="_blank">Easy Polish</a>.<br>
+      <span style="color:var(--muted)">Правило плохого дня: сделай хотя бы повтор — стрик сохранится, без самобичевания.</span>
+    </div>
+  </section>
+
+  <!-- IMMERSION -->
+  <section id="immersion" class="hidden">
+    <div class="card">
+      <div class="tag" id="immTag">Погружение</div>
+      <div style="font-size:18px;font-weight:700" id="immTitle"></div>
+      <div class="muted" style="font-size:13px;margin-top:4px">Диалог дня — слушай и читай. Цель: понять ~80%.</div>
+      <div class="dialog" id="immDialog"></div>
+      <button class="speak" id="immPlayAll">🔊 Прослушать диалог целиком</button>
+      <div class="mission" id="immMission"></div>
+      <div class="toolbar">
+        <button class="btn-primary" id="immStart">К словам →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP (Карта курса) -->
+  <section id="map" class="hidden">
+    <div class="card">
+      <div class="row"><b style="font-size:18px">🗺 Карта курса</b><button class="btn-ghost smallbtn" id="mapBack">← Назад</button></div>
+      <div class="muted" style="font-size:13px;margin-top:6px">Цели курса (Outcomes) → навыки (Skills) по методике EDU-Epistemic. Прогресс считается по введённым и освоенным словам.</div>
+    </div>
+    <div id="mapOutcomes"></div>
+    <div class="card"><b>Навыки по дням</b><div id="mapSkills" style="margin-top:10px"></div></div>
+  </section>
+
+  <!-- DRILL -->
+  <section id="drill" class="hidden">
+    <div class="progress-thin"><i id="drillBar"></i></div>
+    <div class="card" id="drillCard"></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="summary" class="hidden">
+    <div class="card summary center">
+      <div class="em">🎉</div>
+      <div class="big" id="sumStreak">🔥 1</div>
+      <div class="muted">дней подряд</div>
+      <div style="margin-top:18px" id="sumLine"></div>
+      <div class="toolbar"><button class="btn-primary" id="sumHome">На главную</button></div>
+      <div class="note" id="sumNote"></div>
+    </div>
+  </section>
+
+  <!-- ПРОГРАММА МЕСЯЦА (Фаза 2) -->
+  <section id="program" class="hidden">
+    <div class="card">
+      <div class="row"><b style="font-size:18px">🗓 Программа месяца</b><button class="btn-ghost smallbtn" id="progBack">← Назад</button></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 8px">4 недели A0→A1. ~30 минут в день. Отмечай выполненные дни — «плохой день» = хотя бы SRS-разминка, стрик сохранится.</div>
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="note" id="progStat"></div>
+    </div>
+    <div id="programList"></div>
+  </section>
+
+  <!-- ИНТЕРАКТИВНЫЙ МИНИ-ДИАЛОГ (Фаза 2, §4.9) -->
+  <section id="dialog" class="hidden">
+    <div class="progress-thin"><i id="dlgBar"></i></div>
+    <div class="card" id="dlgCard"></div>
+  </section>
+
+  <!-- PRACTICE HUB (Фаза 1) -->
+  <section id="practice" class="hidden">
+    <div class="card">
+      <div class="row"><b style="font-size:18px">🎯 Практика</b><button class="btn-ghost smallbtn" id="pracBack">← Назад</button></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 10px">Сначала выбери, что тренируем, потом — режим.</div>
+      <div class="pscope" id="pracScope"></div>
+      <div class="note" id="pracScopeNote"></div>
+    </div>
+    <div class="pmode-grid" id="pracModes"></div>
+  </section>
+
+  <!-- PRACTICE PLAYER -->
+  <section id="practicePlay" class="hidden">
+    <div class="progress-thin"><i id="pracBar"></i></div>
+    <div class="card" id="pracCard"></div>
+  </section>
+
+  <!-- LESSONS LIST -->
+  <section id="lessons" class="hidden">
+    <div id="lessonsList"></div>
+  </section>
+
+  <!-- LESSON PLAYER -->
+  <section id="lessonPlay" class="hidden">
+    <div class="progress-thin"><i id="lessonBar"></i></div>
+    <div class="card" id="lessonCard"></div>
+  </section>
+
+  <!-- SOBES: банк вопросов к собеседованию -->
+  <style>
+    .sbchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .sbchip{font-size:12.5px;padding:7px 11px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+    .sbchip.on{background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;border-color:transparent}
+    .sbcat{margin:2px 0 6px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;gap:8px}
+    .sbrow{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+    .sbrow:last-child{border-bottom:none}
+    .sbchk{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:16px;padding:0}
+    .sbchk.on{border-color:var(--good);background:rgba(46,194,138,.15)}
+    .sbtxt{flex:1;cursor:pointer}
+    .sbqr{font-weight:600;font-size:15px}
+    .sbqp{color:var(--muted);font-size:13.5px;margin-top:2px}
+    .sbans{margin-top:10px;padding:12px;border-radius:12px;background:var(--panel2);border:1px dashed var(--line);font-size:14.5px}
+    .sbans .apl{font-weight:700;color:var(--good)}
+    .sbans .aru{color:var(--muted);margin-top:6px;font-size:13.5px}
+    .sbdate{font-size:11.5px;color:var(--muted);margin-top:4px}
+    .sbdel{background:none;border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:2px 6px;margin-left:10px}
+    textarea.sbf, input.sbf, select.sbf{width:100%;padding:12px;font-size:15px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);margin-top:10px;font-family:inherit;box-sizing:border-box}
+    textarea.sbf{min-height:64px;resize:vertical}
+    textarea.sbf:focus, input.sbf:focus, select.sbf:focus{outline:none;border-color:var(--blue)}
+    .sbxp{height:8px;background:var(--panel2);border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
+    .sbxp > i{display:block;height:100%;background:linear-gradient(90deg,var(--warn),#f6cf6b);width:0%}
+    .sbrank{font-size:13.5px;margin-top:12px}
+    .sbcities{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .sbcity{font-size:12.5px;padding:8px 11px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+    .sbcity.open{border-color:var(--good);color:var(--text);background:rgba(46,194,138,.1)}
+    .sbcity.cur{border-color:var(--blue);color:var(--text);background:rgba(77,141,240,.12)}
+    .sbcity small{color:var(--muted)}
+    .sbachgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .sbbadge{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:11.5px;text-align:center;opacity:.35;cursor:pointer}
+    .sbbadge.got{opacity:1;border-color:var(--warn)}
+    .sbbadge .bicon{font-size:20px}
+    .bosshp{height:10px;background:var(--panel2);border-radius:8px;overflow:hidden;border:1px solid var(--line);margin:10px 0 4px}
+    .bosshp > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .bosstimer{font-size:20px;font-weight:800;margin-top:12px;color:var(--warn)}
+
+    /* ===== Практика (Фаза 1) ===== */
+    .pscope{display:flex;flex-wrap:wrap;gap:8px}
+    .pchip{font-size:13px;padding:8px 13px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);cursor:pointer}
+    .pchip.on{border-color:var(--blue);color:var(--text);background:rgba(77,141,240,.14)}
+    .pmode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .ptile{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:left;transition:border-color .15s}
+    .ptile:hover{border-color:var(--blue)}
+    .ptile .pi{font-size:26px}
+    .ptile .pt{font-weight:700;margin-top:6px;font-size:15px}
+    .ptile .pd{color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.35}
+    .ptile:disabled{opacity:.4;cursor:not-allowed}
+    /* конструктор фразы / банк слов */
+    .wbank{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;min-height:48px}
+    .wslot{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;min-height:52px;padding:10px;border:1px dashed var(--line);border-radius:14px;background:var(--panel2)}
+    .wtile{font-size:16px;padding:9px 14px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);cursor:pointer;user-select:none}
+    .wtile.used{opacity:.28;pointer-events:none}
+    .wslot .wtile{background:rgba(77,141,240,.14);border-color:var(--blue)}
+    .wtile.ok{border-color:var(--good);background:rgba(46,194,138,.16)}
+    .wtile.bad{border-color:var(--accent);background:rgba(209,29,42,.16)}
+    /* сопоставление пар */
+    .matchwrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .mcell{padding:12px 10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);cursor:pointer;font-size:14.5px;text-align:center}
+    .mcell.sel{border-color:var(--blue);background:rgba(77,141,240,.16)}
+    .mcell.done{opacity:.32;pointer-events:none;border-color:var(--good)}
+    .mcell.miss{animation:shake .3s}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+    .pdir{display:flex;gap:8px;margin:8px 0 2px}
+    /* программа месяца */
+    .pweek-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+    .pday{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+    .pday:first-of-type{border-top:0}
+    .pcheck{flex:0 0 auto;width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel2);color:var(--good);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px}
+    .pcheck.on{border-color:var(--good);background:rgba(46,194,138,.16)}
+    .pday .pdname{font-weight:700;font-size:13px;min-width:26px}
+    .pday .pdtask{font-size:13.5px;color:var(--text);line-height:1.4}
+    .pday .pdact{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+    .pday.done .pdtask{color:var(--muted)}
+    .minibtn{font-size:12.5px;padding:6px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text);cursor:pointer}
+    .minibtn.go{border-color:var(--blue);color:var(--blue)}
+    /* мини-диалог */
+    .dlgline{padding:12px 14px;border-radius:14px;margin-bottom:10px;border:1px solid var(--line)}
+    .dlgline.them{background:var(--panel2)}
+    .dlgline.you{background:rgba(77,141,240,.10);border-color:var(--blue)}
+    .dlgline .who{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .dlgline .pl{font-size:17px;font-weight:600;margin:3px 0}
+    .dlgline .ru{font-size:13.5px;color:var(--muted)}
+  </style>
+  <section id="sobesHome" class="hidden">
+    <div class="card">
+      <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat"><div class="v" id="sbMarked">0</div><div class="l">📓 в тетрадке</div></div>
+        <div class="stat"><div class="v" id="sbDue">0</div><div class="l">к повтору</div></div>
+        <div class="stat"><div class="v mast" id="sbMast">0</div><div class="l">освоено</div></div>
+      </div>
+      <div class="bar" style="margin-top:12px"><i id="sbBar"></i></div>
+      <div class="note" id="sbBarNote"></div>
+      <div class="sbrank" id="sbRank"></div>
+      <div class="sbxp"><i id="sbXpBar"></i></div>
+      <div class="toolbar">
+        <button class="btn-primary" id="sbReviewBtn">Повторение</button>
+        <button class="btn-ghost" id="sbExamBtn">🎲 Экзамен ×10</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn-ghost" id="sbBossBtn">⚔️ Босс: Консул</button>
+        <button class="btn-ghost smallbtn" id="sbAddBtn">+ Свой вопрос</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row"><b>🗺 Путь к собесу</b></div>
+      <div class="sbcities" id="sbCities"></div>
+      <div class="note" id="sbCitiesNote"></div>
+    </div>
+    <div class="card">
+      <div class="row"><b>🏅 Ачивки</b></div>
+      <div class="sbachgrid" id="sbAch"></div>
+    </div>
+    <div class="card hidden" id="sbAddCard">
+      <b>Свой вопрос</b>
+      <select class="sbf" id="sbfCat"></select>
+      <input class="sbf" id="sbfQr" placeholder="Вопрос по-русски" autocomplete="off">
+      <input class="sbf" id="sbfQp" placeholder="Pytanie po polsku" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <textarea class="sbf" id="sbfAp" placeholder="Odpowiedź po polsku (эталонный ответ)" autocapitalize="off" spellcheck="false"></textarea>
+      <textarea class="sbf" id="sbfAr" placeholder="Перевод ответа по-русски (необязательно)"></textarea>
+      <div class="toolbar">
+        <button class="btn-primary" id="sbfSave">Сохранить</button>
+        <button class="btn-ghost" id="sbfCancel">Отмена</button>
+      </div>
+      <div class="note">Вопрос сразу отметится как «в тетрадке» и попадёт в повторения.</div>
+    </div>
+    <div class="card">
+      <div class="sbchips" id="sbStChips" style="margin-top:0"></div>
+      <div class="sbchips" id="sbCatChips"></div>
+    </div>
+    <div id="sbList"></div>
+  </section>
+
+  <!-- SOBES: повторение / экзамен -->
+  <section id="sobesDrill" class="hidden">
+    <div class="progress-thin"><i id="sbDrillBar"></i></div>
+    <div class="card" id="sbDrillCard"></div>
+  </section>
+
+</div>
+
+<!-- Контент вынесен в data/*.js (Фаза 0) -->
+<script src="data/days.js"></script>
+<script src="data/vocab.js"></script>
+<script src="data/curriculum.js"></script>
+<script src="srs.js"></script>
+<script src="store.js"></script>
+<script>
+
+/* ============================ ДВИЖОК ============================ */
+const NEW_GOAL = 20;            // 20 × 7 дней = 140 ≥ 135 → неделя вводится за 7 сессий
+const MASTER_DAYS = 7;          // interval >= 7 дней = «освоено»
+const SESSION_TARGET = 40;      // ориентир размера сессии (≈30 мин)
+const DAY_MS = 86400000;
+
+function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function dateDiffDays(a,b){ // целые дни между YYYY-M-D строками
+  const pa=a.split("-").map(Number), pb=b.split("-").map(Number);
+  const da=new Date(pa[0],pa[1]-1,pa[2]), db=new Date(pb[0],pb[1]-1,pb[2]);
+  return Math.round((db-da)/DAY_MS);
+}
+
+/* --- стабильный ID карточки ---
+   Раньше id был индексом в массиве → добавление/перестановка слов сбивала
+   привязку прогресса, и load() обнулял всё при изменении длины колоды (баг §2.1).
+   Теперь id выводится из содержимого (день + слово) и не зависит от порядка. */
+function slug(s){
+  return (s||"").toLowerCase()
+    .replace(/ą/g,"a").replace(/ć/g,"c").replace(/ę/g,"e").replace(/ł/g,"l")
+    .replace(/ń/g,"n").replace(/ó/g,"o").replace(/ś/g,"s").replace(/ż/g,"z").replace(/ź/g,"z")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);
+}
+function freshState(){
+  const seen = {};
+  const cards = VOCAB.map((v)=>{
+    let id = "d"+v[0]+"-"+slug(v[1]);
+    if(seen[id]){ id = id+"-"+(++seen[id]); } else { seen[id]=1; }   // защита от коллизий
+    return { id, day:v[0], pl:v[1], ru:v[2], hint:v[3], ex:v[4], exru:v[5],
+             ef:2.5, interval:0, reps:0, due:0, introduced:false };
+  });
+  return {
+    cards,
+    stats:{ streak:0, best:0, lastStudied:null, freeze:true,
+            newToday:0, newDate:null, missions:{} },
+    v:2
+  };
+}
+
+/* Загрузка = свежая колода из VOCAB + перенос SRS-прогресса из сохранённого.
+   Сопоставляем по стабильному id, а для старых сохранений — по «день+слово».
+   Новые слова просто добавляются (introduced:false), прогресс НЕ сбрасывается. */
+function migrateTrainer(saved){
+  const fresh = freshState();
+  if(saved && Array.isArray(saved.cards)){
+    const byId={}, byKey={};
+    saved.cards.forEach(c=>{ byId[c.id]=c; byKey[c.day+"|"+c.pl]=c; });
+    fresh.cards.forEach(nc=>{
+      const o = byId[nc.id] || byKey[nc.day+"|"+nc.pl];
+      if(o){
+        nc.ef=(typeof o.ef==="number"?o.ef:2.5);
+        nc.interval=o.interval||0; nc.reps=o.reps||0; nc.due=o.due||0;
+        nc.introduced=!!o.introduced;
+        if(o.hard) nc.hard=true;
+      }
+    });
+    // сохранить карточки-продукцию уроков — их нет в VOCAB, но они уже в повторении
+    const freshIds=new Set(fresh.cards.map(c=>c.id));
+    saved.cards.forEach(c=>{ if(c.lesson && !freshIds.has(c.id)) fresh.cards.push(c); });
+    if(saved.stats) fresh.stats = Object.assign(fresh.stats, saved.stats);
+  }
+  return fresh;
+}
+let S = migrateTrainer(Store.progress.trainer);
+Store.progress.trainer = S;             // тренажёр владеет своим разделом единого хранилища
+function save(){ Store.save(); }
+
+/* Продукция урока → колода повторения (§5.3): ключевые фразы урока становятся
+   карточками SRS (day:0, lesson:true), сразу доступны на повтор и в «Практике». */
+function addLessonCards(lessonId, srs){
+  if(!Array.isArray(srs)) return;
+  let added=0;
+  srs.forEach((p,n)=>{
+    const pl=p[0], ru=p[1], id="ls-"+lessonId+"-"+n;
+    if(S.cards.some(c=>c.id===id || c.pl===pl)) return;   // не дублируем
+    S.cards.push({ id, day:0, pl, ru, hint:"", ex:pl, exru:ru,
+                   ef:2.5, interval:0, reps:0, due:Date.now(), introduced:true, lesson:true });
+    added++;
+  });
+  if(added) save();
+  return added;
+}
+window.addLessonCards=addLessonCards;
+
+/* --- SRS: единый алгоритм из srs.js --- */
+function review(card, grade){ return SRS.review(card, grade); }  // grade: 0 Снова,1 Трудно,2 Хорошо,3 Легко
+
+/* --- метрики (прогресс курса считаем по словам из VOCAB, без учебных фраз lesson:true) --- */
+function dueCards(){ const now=Date.now(); return S.cards.filter(c=>c.introduced && c.due<=now); }
+function masteredCount(){ return S.cards.filter(c=>c.interval>=MASTER_DAYS && !c.lesson).length; }
+function introducedCount(){ return S.cards.filter(c=>c.introduced && !c.lesson).length; }
+function newRemainingToday(){
+  const used = (S.stats.newDate===todayStr()) ? S.stats.newToday : 0;
+  return Math.max(0, NEW_GOAL - used);
+}
+function nextNewCards(limit){
+  return S.cards.filter(c=>!c.introduced).slice(0, limit);
+}
+function currentDay(){
+  const notIntro = S.cards.find(c=>!c.introduced);
+  if(notIntro) return notIntro.day;
+  return MASTER_DAYS; // всё введено
+}
+function dayState(d){
+  const cards=S.cards.filter(c=>c.day===d);
+  const intro=cards.filter(c=>c.introduced).length;
+  if(intro===0) return "future";
+  if(intro<cards.length) return "active";
+  return "done";
+}
+
+/* ============================ UI ============================ */
+const $=id=>document.getElementById(id);
+
+/* --- РОУТЕР ЭКРАНОВ (Фаза 0) ---
+   Один список экранов и одна функция show(): прячем все, показываем один и
+   подсвечиваем нужную вкладку. Раньше show() трижды «оборачивался» в разных
+   модулях (тренажёр/уроки/собес) и списки секций дублировались (проблема §2.2).
+   Теперь любой модуль просто зовёт show("имяЭкрана"). */
+const SCREENS = {
+  home:"trainer", immersion:"trainer", drill:"trainer", summary:"trainer", map:"trainer",
+  practice:"trainer", practicePlay:"trainer", program:"trainer", dialog:"trainer",
+  lessons:"lessons", lessonPlay:"lessons",
+  sobesHome:"sobes", sobesDrill:"sobes"
+};
+const TAB_OF = { trainer:"tabTrainer", lessons:"tabLessons", sobes:"tabSobes" };
+function show(name){
+  for(const s in SCREENS){ const el=$(s); if(el) el.classList.toggle("hidden", s!==name); }
+  const grp = SCREENS[name];
+  for(const g in TAB_OF){ const b=$(TAB_OF[g]); if(b) b.classList.toggle("on", g===grp); }
+  window.scrollTo(0,0);
+}
+const sections=Object.keys(SCREENS);   // совместимость со старым кодом, если где-то ссылается
+
+/* --- аудио (pl-PL) --- */
+let plVoice=null, voicesReady=false;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  plVoice = vs.find(v=>v.lang && v.lang.toLowerCase().startsWith("pl")) || null;
+  voicesReady=true;
+  updateAudioNote();
+}
+if("speechSynthesis" in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged=pickVoice;
+}
+function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="pl-PL"; if(plVoice) u.voice=plVoice; u.rate=0.92;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function updateAudioNote(){
+  const n=$("audioNote");
+  if(!("speechSynthesis" in window)){ n.textContent="🔇 Аудио недоступно в этом браузере."; return; }
+  if(voicesReady && !plVoice){ n.textContent="🔈 Польский голос не найден в системе. В macOS: Системные настройки → Универсальный доступ → Проговаривание → добавить польский голос."; }
+  else n.textContent="🔊 Аудио озвучивает польский (pl-PL). Жми 🔊 у каждого слова.";
+}
+
+/* --- главная --- */
+function renderHome(){
+  // обнуляем новые за день
+  if(S.stats.newDate!==todayStr()){ S.stats.newDate=todayStr(); S.stats.newToday=0; save(); }
+  $("sStreak").textContent=S.stats.streak;
+  $("sNew").textContent=(S.stats.newToday||0)+"/"+NEW_GOAL;
+  $("sMast").textContent=masteredCount();
+  $("sDue").textContent=dueCards().length;
+  const total=VOCAB.length, intro=introducedCount();
+  $("weekPct").textContent=intro+" / "+total;
+  $("weekBar").style.width=Math.round(intro/total*100)+"%";
+  // дни
+  const row=$("daysRow"); row.innerHTML="";
+  const cur=currentDay();
+  DAYS.forEach(dd=>{
+    const st=dayState(dd.d);
+    const el=document.createElement("div");
+    el.className="day"+(st==="done"?" done":"")+(dd.d===cur&&st!=="done"?" active":"");
+    el.innerHTML="<b>"+(st==="done"?"✓":dd.d)+"</b><small>День "+dd.d+"</small>";
+    el.title=dd.theme+" — "+dd.ru;
+    row.appendChild(el);
+  });
+  // карточка дня
+  const dObj=DAYS.find(x=>x.d===cur)||DAYS[6];
+  $("todayTag").textContent="Сегодня · День "+dObj.d;
+  $("todayTitle").textContent=dObj.theme;
+  const nr=newRemainingToday();
+  const dn=dueCards().length;
+  $("todayDesc").innerHTML=dObj.ru+"<br><span class='muted'>Новых доступно: "+Math.min(nr,nextNewCards(99).length)+" · к повтору: "+dn+"</span>";
+  const allDone = intro===total && dn===0 && nr<NEW_GOAL;
+  $("startBtn").textContent = allDone ? "Повторить (всё введено ✓)" : "Тренировка слов (30 мин)";
+  updateAudioNote();
+  show("home");
+  save();
+}
+
+/* --- построение очереди сессии --- */
+let queue=[], qIndex=0, sessionStats={reviewed:0,learned:0}, introducedThisSession=[];
+function buildQueue(reviewOnly){
+  const due=dueCards();
+  let news=[];
+  if(!reviewOnly){
+    // Новые НЕ урезаем из-за повторов — иначе неделя не закроется за 7 дней.
+    // На тяжёлый по повторам день есть кнопка «только повтор».
+    news=nextNewCards(newRemainingToday());
+  }
+  // помечаем новые как introduced (входят в сессию)
+  introducedThisSession=news.map(c=>c.id);
+  news.forEach(c=>{ c.introduced=true; });
+  queue = due.concat(news);
+  // лёгкое перемешивание, но новые не в самом начале (сначала разогрев-повтор)
+  shuffle(due); shuffle(news);
+  queue = due.concat(news);
+  qIndex=0; sessionStats={reviewed:0,learned:0};
+  save();
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+
+/* --- запуск урока --- */
+function startLesson(reviewOnly){
+  const cur=currentDay();
+  buildQueue(reviewOnly);
+  if(queue.length===0){ alert("На сегодня нечего повторять — отличная работа! Возвращайся завтра."); renderHome(); return; }
+  // показать погружение, если в сессии есть новые слова и день не «всё введено»
+  const hasNew=introducedThisSession.length>0;
+  if(hasNew && !reviewOnly){
+    showImmersion(cur, ()=> runDrill());
+  } else {
+    runDrill();
+  }
+}
+
+/* --- погружение --- */
+function showImmersion(day, done){
+  const dObj=DAYS.find(x=>x.d===day)||DAYS[0];
+  $("immTag").textContent="Погружение · День "+dObj.d;
+  $("immTitle").textContent=dObj.theme+" — "+dObj.ru;
+  const dlg=$("immDialog"); dlg.innerHTML="";
+  dObj.dialog.forEach(line=>{
+    const el=document.createElement("div"); el.className="line";
+    el.innerHTML="<span class='who'>"+line[0]+"</span><span><span class='pl'>"+line[1]+"</span> <button class='speak' style='padding:3px 8px;margin:0'>🔊</button><br><span class='ru'>"+line[2]+"</span></span>";
+    el.querySelector("button").onclick=()=>speak(line[1]);
+    dlg.appendChild(el);
+  });
+  $("immPlayAll").onclick=()=>speak(dObj.dialog.map(l=>l[1]).join(". "));
+  $("immMission").innerHTML="<b>🎯 Миссия дня:</b> "+dObj.mission;
+  $("immStart").onclick=done;
+  show("immersion");
+}
+
+/* --- упражнения --- */
+function runDrill(){ show("drill"); nextCard(); }
+function nextCard(){
+  if(qIndex>=queue.length){ return finishSession(); }
+  const total=queue.length;
+  $("drillBar").style.width=Math.round(qIndex/total*100)+"%";
+  const card=queue[qIndex];
+  // тип по зрелости
+  if(card.reps===0) renderFlash(card);
+  else if(card.reps<=2) renderChoice(card);
+  else renderType(card);
+}
+function advance(card, grade){
+  review(card, grade);
+  if(grade===0){ // снова — вернуть в очередь позже
+    queue.push(card);
+  } else {
+    sessionStats.reviewed++;
+    if(introducedThisSession.includes(card.id)) sessionStats.learned++;
+  }
+  qIndex++;
+  save();
+  nextCard();
+}
+
+function audioBtn(card){
+  return "<button class='speak' id='spk'>🔊 Послушать</button>";
+}
+function bindAudio(card){ const b=$("spk"); if(b) b.onclick=()=>speak(card.pl); }
+
+function renderFlash(card){
+  const c=$("drillCard");
+  c.innerHTML=
+    "<div class='tag'>Новое слово · День "+card.day+"</div>"+
+    "<div class='prompt'>Польский</div>"+
+    "<div class='term'>"+card.pl+"</div>"+
+    "<div class='hint'>["+card.hint+"]</div>"+
+    audioBtn(card)+
+    "<div id='reveal'></div>";
+  bindAudio(card); speak(card.pl);
+  const rv=$("reveal");
+  rv.innerHTML="<button class='btn-primary' id='show' style='margin-top:18px'>Показать перевод</button>";
+  $("show").onclick=()=>{
+    rv.innerHTML="<div class='answer'>"+card.ru+"</div>"+
+      "<div class='ex'>«<b>"+card.ex+"</b>» — "+card.exru+"</div>"+
+      gradesHTML();
+    bindGrades(card);
+  };
+}
+function renderChoice(card){
+  // PL -> выбрать RU
+  const others=S.cards.filter(c=>c.id!==card.id);
+  shuffle(others);
+  const opts=[card].concat(others.slice(0,3));
+  shuffle(opts);
+  const c=$("drillCard");
+  c.innerHTML=
+    "<div class='tag'>Узнавание · День "+card.day+"</div>"+
+    "<div class='prompt'>Что значит?</div>"+
+    "<div class='term'>"+card.pl+"</div>"+
+    "<div class='hint'>["+card.hint+"]</div>"+
+    audioBtn(card)+
+    "<div class='opts' id='opts'></div>";
+  bindAudio(card); speak(card.pl);
+  const box=$("opts");
+  opts.forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.textContent=o.ru;
+    b.onclick=()=>{
+      if(o.id===card.id){ b.classList.add("correct"); afterChoice(card,true); }
+      else{ b.classList.add("wrong"); [...box.children].forEach(x=>{ if(x.textContent===card.ru) x.classList.add("correct"); }); afterChoice(card,false); }
+      [...box.children].forEach(x=>x.disabled=true);
+    };
+    box.appendChild(b);
+  });
+}
+function afterChoice(card, correct){
+  const c=$("drillCard");
+  const fb=document.createElement("div"); fb.className="feedback "+(correct?"ok":"bad");
+  fb.innerHTML=(correct?"✓ Верно":"✗ Правильно: <b>"+card.ru+"</b>")+
+    "<div class='ex'>«<b>"+card.ex+"</b>» — "+card.exru+"</div>";
+  c.appendChild(fb);
+  // авто-оценка: верно -> Хорошо(2), неверно -> Снова(0)
+  const g=document.createElement("div");
+  g.innerHTML=gradesHTML(); c.appendChild(g);
+  bindGrades(card, correct?2:0);
+}
+function renderType(card){
+  // RU -> напечатать PL (продакшн)
+  const c=$("drillCard");
+  c.innerHTML=
+    "<div class='tag'>Продакшн · День "+card.day+"</div>"+
+    "<div class='prompt'>Напиши по-польски</div>"+
+    "<div class='term' style='font-size:26px'>"+card.ru+"</div>"+
+    "<input class='type' id='inp' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='напиши тут…'>"+
+    "<button class='btn-primary' id='check' style='margin-top:14px'>Проверить</button>"+
+    "<div id='tfb'></div>";
+  const inp=$("inp"); inp.focus();
+  const doCheck=()=>{
+    const val=norm(inp.value), target=norm(card.pl), bare=stripDia(target);
+    const exact=val===target, near=stripDia(val)===bare;
+    inp.disabled=true; $("check").style.display="none";
+    const tfb=$("tfb");
+    let head, grade;
+    if(exact){ head="<div class='feedback ok'>✓ Точно!</div>"; grade=3; }
+    else if(near){ head="<div class='feedback ok'>✓ Почти — следи за диакритикой: <b>"+card.pl+"</b></div>"; grade=2; }
+    else{ head="<div class='feedback bad'>✗ Правильно: <b>"+card.pl+"</b></div>"; grade=0; }
+    tfb.innerHTML=head+
+      "<div class='hint' style='margin-top:6px'>["+card.hint+"]</div>"+
+      audioBtn(card)+
+      "<div class='ex'>«<b>"+card.ex+"</b>» — "+card.exru+"</div>"+
+      gradesHTML();
+    bindAudio(card); speak(card.pl);
+    bindGrades(card, grade);
+  };
+  $("check").onclick=doCheck;
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter") doCheck(); });
+}
+function norm(s){ return (s||"").toLowerCase().trim().replace(/\s+/g," ").replace(/[.!?,;:]+$/,""); }
+function stripDia(s){
+  return s.replace(/ą/g,"a").replace(/ć/g,"c").replace(/ę/g,"e").replace(/ł/g,"l")
+          .replace(/ń/g,"n").replace(/ó/g,"o").replace(/ś/g,"s").replace(/ż/g,"z").replace(/ź/g,"z");
+}
+function gradesHTML(){
+  return "<div class='grades'>"+
+    "<button class='grade g-again'>Снова</button>"+
+    "<button class='grade g-hard'>Трудно</button>"+
+    "<button class='grade g-good'>Хорошо</button>"+
+    "<button class='grade g-easy'>Легко</button></div>"+
+    "<div class='note'>Оцени, насколько легко вспомнил — это настраивает интервал повтора.</div>";
+}
+function bindGrades(card, forced){
+  const btns=document.querySelectorAll("#drillCard .grade");
+  btns.forEach((b,i)=>{
+    b.onclick=()=>advance(card, (forced!==undefined? forced : i));
+  });
+  if(forced!==undefined){
+    // подсветить рекомендованную, но дать выбрать
+    btns[forced].style.filter="brightness(1.35)";
+    btns.forEach((b,i)=>{ b.onclick=()=>advance(card, i); });
+  }
+}
+
+/* --- финиш + стрик --- */
+function finishSession(){
+  $("drillBar").style.width="100%";
+  // стрик
+  const t=todayStr(), last=S.stats.lastStudied;
+  if(last!==t){
+    if(!last){ S.stats.streak=1; }
+    else{
+      const gap=dateDiffDays(last,t);
+      if(gap===1){ S.stats.streak+=1; }
+      else if(gap>1){
+        if(S.stats.freeze){ S.stats.streak+=1; S.stats.freeze=false; } // заморозка спасает один пропуск
+        else S.stats.streak=1;
+      }
+    }
+    // восстановить заморозку, если занимался без пропуска
+    if(dateDiffDays(last||t,t)<=1) {/* keep */}
+    S.stats.lastStudied=t;
+    if(S.stats.streak>S.stats.best) S.stats.best=S.stats.streak;
+    // учёт новых за день
+    S.stats.newToday=(S.stats.newDate===t?S.stats.newToday:0)+introducedThisSession.length;
+    S.stats.newDate=t;
+    if(S.stats.streak%5===0) S.stats.freeze=true; // периодически даём новую заморозку
+  }
+  save();
+  $("sumStreak").textContent="🔥 "+S.stats.streak;
+  $("sumLine").innerHTML=
+    "<div style='font-size:16px'>Повторено: <b>"+sessionStats.reviewed+"</b> · Новых выучено: <b>"+sessionStats.learned+"</b></div>"+
+    "<div class='muted' style='margin-top:6px'>Освоено всего: "+masteredCount()+" / "+VOCAB.length+" · Введено: "+introducedCount()+" / "+VOCAB.length+"</div>";
+  const cur=currentDay();
+  const dObj=DAYS.find(x=>x.d===cur)||DAYS[6];
+  $("sumNote").innerHTML="🎯 Сегодня в среде: "+dObj.mission+
+    "<br><span class='muted'>Заморозка стрика: "+(S.stats.freeze?"есть 🛡":"использована")+"</span>";
+  show("summary");
+}
+
+/* ============================ СОБЫТИЯ ============================ */
+$("startBtn").onclick=()=>startLesson(false);
+$("minBtn").onclick=()=>startLesson(true);
+$("missionBtn").onclick=()=>{ const d=DAYS.find(x=>x.d===currentDay())||DAYS[6]; alert("🎯 Миссия дня ("+d.theme+"):\n\n"+d.mission); };
+$("sumHome").onclick=renderHome;
+$("resetBtn").onclick=()=>{ if(confirm("Сбросить весь прогресс тренажёра?")){ S=freshState(); Store.progress.trainer=S; Store.saveNow(); renderHome(); } };
+$("tabTrainer").onclick=renderHome;   // канонический обработчик вкладки «Тренажёр» (роутер прячет остальное)
+
+renderHome();
+</script>
+<script>
+/* ============================ V2 ENHANCEMENTS ============================ */
+(function(){
+  function dayProg(day){
+    const cs=S.cards.filter(c=>c.day===day);
+    return {total:cs.length, intro:cs.filter(c=>c.introduced).length, mast:cs.filter(c=>c.interval>=MASTER_DAYS).length};
+  }
+  function chip(t){ return "<span class='tag' style='margin:0'>"+t+"</span>"; }
+
+  /* ---- стрик-календарь ---- */
+  function renderDashExtra(){
+    const grid=$("calGrid"); if(!grid) return;
+    S.stats.history=S.stats.history||[];
+    const set=new Set(S.stats.history);
+    grid.innerHTML="";
+    const today=new Date();
+    for(let i=27;i>=0;i--){
+      const d=new Date(today); d.setDate(today.getDate()-i);
+      const key=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+      const cell=document.createElement("div");
+      cell.className="cal"+(set.has(key)?" on":"")+(i===0?" today":"");
+      cell.title=key;
+      grid.appendChild(cell);
+    }
+    if($("calStreak")) $("calStreak").textContent=S.stats.streak;
+    if($("calBest")) $("calBest").textContent=S.stats.best||S.stats.streak;
+  }
+
+  /* ---- карта курса ---- */
+  function renderMap(){
+    const oc=$("mapOutcomes"); oc.innerHTML="";
+    CURRICULUM.outcomes.forEach(o=>{
+      let ti=0,tm=0,tt=0;
+      o.days.forEach(d=>{ const p=dayProg(d); ti+=p.intro; tm+=p.mast; tt+=p.total; });
+      const pct=tt?Math.round(ti/tt*100):0;
+      const el=document.createElement("div"); el.className="card";
+      el.innerHTML=
+        "<div class='row'><b>"+o.id+". "+o.name+"</b><span class='muted'>"+tm+"/"+tt+" освоено</span></div>"+
+        "<div class='muted' style='font-size:13px;margin:6px 0'>"+o.desc+"</div>"+
+        "<div style='display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px'>"+
+          chip("Bloom: "+o.bloom)+chip("База: "+o.base)+chip(o.validation)+chip("Дни: "+o.days.join(", "))+
+        "</div>"+
+        "<div class='bar'><i style='width:"+pct+"%'></i></div>"+
+        "<div class='note'>Введено "+ti+"/"+tt+" · Освоено "+tm+"/"+tt+"</div>";
+      oc.appendChild(el);
+    });
+    const sk=$("mapSkills"); sk.innerHTML="";
+    CURRICULUM.skills.forEach(s=>{
+      const p=dayProg(s.day);
+      const pct=p.total?Math.round(p.intro/p.total*100):0;
+      const row=document.createElement("div"); row.className="skillrow";
+      row.innerHTML=
+        "<div class='skillhead'><span><b>"+s.code+"</b> · День "+s.day+" · "+s.name+"</span><span class='muted'>"+p.mast+"/"+p.total+"</span></div>"+
+        "<div class='muted' style='font-size:12px;margin-top:2px'>"+s.ru+" · "+s.outcome+" · Bloom: "+s.bloom+" · "+s.base+"</div>"+
+        "<div class='bar' style='margin-top:6px'><i style='width:"+pct+"%'></i></div>";
+      sk.appendChild(row);
+    });
+  }
+  function showMap(){ renderMap(); show("map"); }   // роутер прячет остальные экраны
+
+  /* ---- тема (в едином хранилище settings.theme) ---- */
+  let theme=(Store.progress.settings && Store.progress.settings.theme) || "dark";
+  function applyTheme(t){ document.body.classList.toggle("light", t==="light"); if($("themeBtn")) $("themeBtn").textContent=(t==="light"?"☀️":"🌙"); }
+  applyTheme(theme);
+
+  /* ---- экспорт / импорт (весь прогресс: тренажёр + уроки + собес + настройки) ---- */
+  function exportData(){
+    try{
+      const blob=new Blob([JSON.stringify(Store.export())],{type:"application/json"});
+      const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);
+      a.download="polski_progress_"+todayStr()+".json";
+      document.body.appendChild(a); a.click(); a.remove();
+    }catch(e){ alert("Не удалось сохранить файл."); }
+  }
+  function importData(file){
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const d=JSON.parse(r.result);
+        if(Store.import(d)){
+          alert("Прогресс импортирован ✓ Приложение перезагрузится.");
+          location.reload();
+        } else {
+          alert("Файл не подходит (неизвестный формат).");
+        }
+      }catch(e){ alert("Не удалось прочитать файл."); }
+    };
+    r.readAsText(file);
+  }
+
+  /* ---- обёртка, чтобы дашборд и календарь обновлялись на главной ---- */
+  const origHome=renderHome;
+  renderHome=function(){ origHome(); renderDashExtra(); };
+  const origFinish=finishSession;
+  finishSession=function(){
+    try{
+      S.stats.history=S.stats.history||[];
+      const t=todayStr();
+      if(!S.stats.history.includes(t)) S.stats.history.push(t);
+      save();
+    }catch(e){}
+    origFinish();
+    renderDashExtra();
+  };
+
+  /* ---- сидинг истории и события ---- */
+  S.stats.history=S.stats.history||[];
+  if(S.stats.history.length===0 && S.stats.lastStudied) S.stats.history.push(S.stats.lastStudied);
+  save();
+
+  $("mapBtn").onclick=showMap;
+  $("mapBack").onclick=function(){ renderHome(); };
+  $("themeBtn").onclick=function(){ theme=(theme==="light"?"dark":"light"); Store.progress.settings.theme=theme; Store.save(); applyTheme(theme); };
+  $("expBtn").onclick=exportData;
+  $("impBtn").onclick=function(){ $("impFile").click(); };
+  $("impFile").onchange=function(e){ if(e.target.files[0]) importData(e.target.files[0]); };
+  $("sumHome").onclick=function(){ renderHome(); };
+
+  renderDashExtra();
+})();
+</script>
+<script>
+/* ====== TTS по выделению: любое слово/фраза + устойчивые выражения целиком ====== */
+(function(){
+  if(!("speechSynthesis" in window)) return;
+  var PL = "a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ";
+  // устойчивые выражения = многословные единицы из учебной колоды
+  var CHUNKS = Array.from(new Set(VOCAB.map(function(v){return v[1].trim();}).filter(function(p){return /\s/.test(p);})));
+  // отдельные слова колоды (чтобы не раздувать их в фразу без контекста)
+  var SINGLES = new Set(VOCAB.map(function(v){return v[1].trim().toLowerCase();}).filter(function(p){return !/\s/.test(p);}));
+  function esc(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+  function cleanWord(s){ return s.replace(new RegExp("^[^"+PL+"]+|[^"+PL+"]+$","g"),""); }
+  function findChunk(word, ctx){
+    var w = cleanWord(word); if(!w) return null;
+    var re = new RegExp("(^|[^"+PL+"])"+esc(w)+"([^"+PL+"]|$)","i");
+    var best=null;
+    for(var i=0;i<CHUNKS.length;i++){
+      var ch=CHUNKS[i];
+      if(re.test(ch)){
+        if(!ctx || ctx.toLowerCase().indexOf(ch.toLowerCase())>=0){
+          if(!best || ch.length>best.length) best=ch;
+        }
+      }
+    }
+    return best;
+  }
+  var pending="";
+  var pop=document.createElement("div");
+  pop.id="ttsPop"; pop.style.display="none";
+  pop.innerHTML="<button id='ttsBtn'>🔊 <span id='ttsLbl'></span></button>";
+  document.body.appendChild(pop);
+  var btn=pop.querySelector("#ttsBtn"), lbl=pop.querySelector("#ttsLbl");
+  btn.addEventListener("mousedown", function(e){ e.preventDefault(); }); // сохранить выделение
+  btn.addEventListener("click", function(){ if(pending) speak(pending); });
+  function hide(){ pop.style.display="none"; }
+  function decide(){
+    var sel=window.getSelection();
+    if(!sel || sel.isCollapsed){ hide(); return; }
+    var txt=(sel.toString()||"").trim();
+    if(!txt){ hide(); return; }
+    if(!(new RegExp("["+PL+"]")).test(txt)){ hide(); return; } // нет латиницы — не польский
+    var speakText=txt;
+    var single = !/\s/.test(txt);
+    if(single){
+      var ctx="";
+      try{ var n=sel.anchorNode; n=n&&(n.nodeType===3?n.parentElement:n); if(n) ctx=n.textContent||""; }catch(e){}
+      var chunk=findChunk(txt, ctx);
+      if(chunk) speakText=chunk;
+      else if(!SINGLES.has(cleanWord(txt).toLowerCase())){ var any=findChunk(txt,""); if(any) speakText=any; }
+    }
+    pending=speakText;
+    lbl.textContent = speakText.length>28 ? speakText.slice(0,27)+"…" : speakText;
+    var rect;
+    try{ rect=sel.getRangeAt(0).getBoundingClientRect(); }catch(e){ hide(); return; }
+    if(!rect || (!rect.width && !rect.height)){ hide(); return; }
+    pop.style.display="block";
+    var px=Math.max(8, Math.min(window.innerWidth-pop.offsetWidth-8, rect.left+rect.width/2-pop.offsetWidth/2));
+    var py=rect.top - pop.offsetHeight - 8;
+    pop.style.left=px+"px";
+    pop.style.top=(py<8 ? rect.bottom+8 : py)+"px";
+  }
+  document.addEventListener("mouseup", function(){ setTimeout(decide,0); });
+  document.addEventListener("touchend", function(){ setTimeout(decide,0); });
+  document.addEventListener("selectionchange", function(){ var s=window.getSelection(); if(!s||s.isCollapsed) hide(); });
+  window.addEventListener("scroll", hide, true);
+})();
+</script>
+<script src="practice.js"></script>
+<script src="lessons.js"></script>
+<script src="program.js"></script>
+<script>
+/* ============================ ДВИЖОК УРОКОВ ============================ */
+(function(){
+  /* Прогресс уроков живёт в едином хранилище (раньше был отдельный ключ и не попадал в экспорт). */
+  let LP = Store.progress.lessons || (Store.progress.lessons = {});
+  function lsave(){ Store.save(); }
+
+  function showLessons(){ renderList(); show("lessons"); }   // роутер прячет остальное и красит вкладку
+  $("tabLessons").onclick=showLessons;
+
+  /* --- озвучка кусков {{...}} --- */
+  function fmt(html){ return (html||"").replace(/\{\{(.+?)\}\}/g, function(m,p){ return "<span class='plspk'>"+p+"</span>"; }); }
+  function bindSpk(root){
+    root.querySelectorAll(".plspk").forEach(function(el){ el.onclick=function(){ speak(el.textContent); }; });
+  }
+
+  /* --- распознавание речи --- */
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  function lev(a,b){
+    if(a===b) return 0;
+    const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+    let prev=Array.from({length:n+1},(_,i)=>i);
+    for(let i=1;i<=m;i++){
+      const cur=[i];
+      for(let j=1;j<=n;j++)
+        cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+      prev=cur;
+    }
+    return prev[n];
+  }
+  function wordsOf(s){ return stripDia(norm(s)).replace(/[^a-z0-9 ]/g,"").split(" ").filter(Boolean); }
+  function simScore(said, target){
+    const a=wordsOf(said), b=wordsOf(target);
+    if(!b.length) return 0;
+    const used=new Set(); let hit=0;
+    b.forEach(function(w){
+      let best=-1;
+      for(let i=0;i<a.length;i++){
+        if(used.has(i)) continue;
+        const d=lev(a[i],w), tol=w.length>4?2:(w.length>2?1:0);
+        if(d<=tol){ best=i; break; }
+      }
+      if(best>=0){ used.add(best); hit++; }
+    });
+    return hit/b.length;
+  }
+
+  /* --- плеер --- */
+  let L=null, si=0, exOK=0, exTotal=0;
+  window.startLessonById=function(id){
+    L=LESSONS.find(function(x){return x.id===id;});
+    if(!L) return;
+    si=0; exOK=0; exTotal=0;
+    show("lessonPlay");
+    renderStep(); window.scrollTo(0,0);
+  };
+  function next(){ si++; if(si>=L.steps.length){ finish(); } else { renderStep(); window.scrollTo(0,0);} }
+  function head(extra){
+    return "<div class='stephead'><span class='muted'>"+L.title+" · шаг "+(si+1)+"/"+L.steps.length+(extra?(" · "+extra):"")+"</span>"+
+      "<button class='exitbtn' id='lsExit'>✕ выйти</button></div>";
+  }
+  function bindExit(){ $("lsExit").onclick=function(){ if(confirm("Выйти из урока? Прогресс шагов не сохранится.")) showLessons(); }; }
+  function nextBtn(label){ return "<button class='btn-primary' id='lsNext' style='margin-top:18px'>"+(label||"Дальше →")+"</button>"; }
+  function bindNext(){ $("lsNext").onclick=next; }
+
+  function renderStep(){
+    $("lessonBar").style.width=Math.round(si/L.steps.length*100)+"%";
+    const s=L.steps[si], c=$("lessonCard");
+    if(s.t==="ex") renderEx(s,c);
+    else if(s.t==="mcq") renderMcq(s,c);
+    else if(s.t==="type") renderTypeStep(s,c);
+    else if(s.t==="dict") renderDict(s,c);
+    else if(s.t==="speak") renderSpeak(s,c);
+    else if(s.t==="build" || s.t==="match" || s.t==="cloze") renderModeStep(s,c);
+  }
+
+  /* Шаги build/match/cloze используют общие виджеты из practice.js (window.Modes). */
+  function renderModeStep(s,c){
+    exTotal++;
+    const label={build:"собери фразу",match:"соедини пары",cloze:"вставь слово"}[s.t];
+    c.innerHTML=head(label)+"<div id='mstep'></div>";
+    bindExit();
+    const host=$("mstep");
+    const onDone=(ok)=>{ if(ok) exOK++; next(); };
+    if(s.t==="build") Modes.build(host, s, {onDone});
+    else if(s.t==="cloze") Modes.cloze(host, s, {onDone});
+    else if(s.t==="match") Modes.match(host, s.pairs||[], {onDone});
+  }
+
+  function renderEx(s,c){
+    c.innerHTML=head("объяснение")+
+      "<div class='step-title'>"+s.title+"</div>"+
+      "<div class='theory'>"+fmt(s.html)+"</div>"+
+      "<div class='note'>💡 Синий текст можно нажать — озвучится по-польски.</div>"+
+      nextBtn();
+    bindSpk(c); bindNext(); bindExit();
+  }
+
+  function renderMcq(s,c){
+    exTotal++;
+    c.innerHTML=head("выбери ответ")+
+      "<div class='step-title'>"+s.q+"</div>"+
+      "<div class='opts' id='lsOpts'></div><div id='lsFb'></div>";
+    bindExit();
+    const box=$("lsOpts");
+    let answered=false;
+    s.opts.forEach(function(o,i){
+      const b=document.createElement("button"); b.className="opt"; b.textContent=o;
+      b.onclick=function(){
+        if(answered) return; answered=true;
+        const ok=(i===s.a);
+        if(ok){ exOK++; b.classList.add("correct"); }
+        else { b.classList.add("wrong"); box.children[s.a].classList.add("correct"); }
+        [].forEach.call(box.children,function(x){x.disabled=true;});
+        $("lsFb").innerHTML="<div class='feedback "+(ok?"ok":"bad")+"'>"+(ok?"✓ Верно. ":"✗ ")+s.why+"</div>"+nextBtn();
+        bindNext();
+      };
+      box.appendChild(b);
+    });
+  }
+
+  function renderTypeStep(s,c){
+    exTotal++;
+    const answers=Array.isArray(s.a)?s.a:[s.a];
+    c.innerHTML=head("напиши")+
+      "<div class='step-title'>"+s.q+"</div>"+
+      (s.hint?"<div class='hint'>Подсказка: "+s.hint+"</div>":"")+
+      "<input class='type' id='lsInp' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='напиши по-польски…'>"+
+      "<button class='btn-primary' id='lsCheck' style='margin-top:14px'>Проверить</button><div id='lsFb'></div>";
+    bindExit();
+    const inp=$("lsInp"); inp.focus();
+    function check(){
+      const val=norm(inp.value);
+      const exact=answers.some(function(a){return norm(a)===val;});
+      const near=!exact && answers.some(function(a){return stripDia(norm(a))===stripDia(val);});
+      inp.disabled=true; $("lsCheck").style.display="none";
+      const best=answers[0];
+      let msg;
+      if(exact){ exOK++; msg="<div class='feedback ok'>✓ Точно!</div>"; }
+      else if(near){ exOK++; msg="<div class='feedback ok'>✓ Почти — следи за диакритикой: <b>"+best+"</b></div>"; }
+      else msg="<div class='feedback bad'>✗ Правильно: <b>"+best+"</b></div>";
+      $("lsFb").innerHTML=msg+"<button class='speak' id='lsSpk'>🔊 Послушать</button>"+nextBtn();
+      $("lsSpk").onclick=function(){ speak(best); };
+      speak(best);
+      bindNext();
+    }
+    $("lsCheck").onclick=check;
+    inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); });
+  }
+
+  function renderDict(s,c){
+    exTotal++;
+    c.innerHTML=head("диктант")+
+      "<div class='step-title'>Слушай и пиши</div>"+
+      "<div class='muted' style='font-size:13.5px'>Нажми 🔊, слушай сколько нужно, набери то, что услышал. Диакритика важна!</div>"+
+      "<button class='speak' id='lsPlay' style='margin-top:12px;font-size:16px;padding:10px 18px'>🔊 Прослушать</button>"+
+      "<input class='type' id='lsInp' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='что услышал…'>"+
+      "<button class='btn-primary' id='lsCheck' style='margin-top:14px'>Проверить</button><div id='lsFb'></div>";
+    bindExit();
+    $("lsPlay").onclick=function(){ speak(s.pl); };
+    const inp=$("lsInp");
+    function check(){
+      const val=norm(inp.value), target=norm(s.pl);
+      const exact=val===target, near=stripDia(val)===stripDia(target);
+      inp.disabled=true; $("lsCheck").style.display="none";
+      let msg;
+      if(exact){ exOK++; msg="<div class='feedback ok'>✓ Идеально!</div>"; }
+      else if(near){ exOK++; msg="<div class='feedback ok'>✓ Услышал верно, но диакритика: <b>"+s.pl+"</b></div>"; }
+      else msg="<div class='feedback bad'>✗ Было: <b>"+s.pl+"</b></div>";
+      $("lsFb").innerHTML=msg+"<div class='ex'>Перевод: "+s.ru+"</div>"+nextBtn();
+      bindNext();
+    }
+    $("lsCheck").onclick=check;
+    inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); });
+  }
+
+  function renderSpeak(s,c){
+    exTotal++;
+    c.innerHTML=head("произнеси")+
+      "<div class='step-title'>Скажи вслух:</div>"+
+      "<div class='term' style='font-size:26px'>"+s.pl+"</div>"+
+      "<div class='hint'>"+s.ru+"</div>"+
+      "<button class='speak' id='lsPlay'>🔊 Послушать образец</button>"+
+      (SR? "<button class='micbtn' id='lsMic'>🎤 Говорить</button>"
+         : "<div class='note' style='margin-top:12px'>🎤 Распознавание речи недоступно в этом браузере — произнеси вслух и оцени себя честно.</div>"+
+           "<div class='toolbar'><button class='btn-ghost' id='lsSelfOk'>Получилось ✓</button><button class='btn-ghost' id='lsSelfNo'>Ещё потренирую</button></div>")+
+      "<div id='lsFb'></div>";
+    bindExit();
+    $("lsPlay").onclick=function(){ speak(s.pl); };
+    let counted=false;
+    function grade(ok){ if(!counted){ counted=true; if(ok) exOK++; } }
+    if(!SR){
+      $("lsSelfOk").onclick=function(){ grade(true); $("lsFb").innerHTML="<div class='feedback ok'>✓ Зачтено</div>"+nextBtn(); bindNext(); };
+      $("lsSelfNo").onclick=function(){ grade(false); $("lsFb").innerHTML="<div class='feedback'>Повтори за образцом ещё пару раз и иди дальше.</div>"+nextBtn(); bindNext(); };
+      return;
+    }
+    const mic=$("lsMic");
+    mic.onclick=function(){
+      mic.disabled=true; mic.textContent="🎙 Слушаю… говори";
+      let rec;
+      try{ rec=new SR(); }catch(e){ $("lsFb").innerHTML="<div class='feedback bad'>Не удалось запустить микрофон.</div>"+nextBtn(); bindNext(); return; }
+      rec.lang="pl-PL"; rec.interimResults=false; rec.maxAlternatives=3;
+      let done=false;
+      rec.onresult=function(e){
+        done=true;
+        let best=0, bestTxt="";
+        for(let i=0;i<e.results[0].length;i++){
+          const t=e.results[0][i].transcript;
+          const sc=simScore(t, s.pl);
+          if(sc>=best){ best=sc; bestTxt=t; }
+        }
+        const ok=best>=0.66;
+        grade(ok);
+        $("lsFb").innerHTML=
+          "<div class='recres'>Услышал: «"+bestTxt+"»</div>"+
+          "<div class='feedback "+(ok?"ok":"bad")+"'>"+(ok? "✓ Отлично, распознал по-польски!" : "✗ Похоже не совсем — послушай образец и попробуй ещё.")+"</div>"+
+          nextBtn(ok?"Дальше →":"Дальше (или 🎤 ещё раз)");
+        bindNext();
+        mic.disabled=false; mic.textContent="🎤 Ещё раз";
+      };
+      rec.onerror=function(e){
+        if(done) return;
+        mic.disabled=false; mic.textContent="🎤 Говорить";
+        const denied=(e.error==="not-allowed"||e.error==="service-not-allowed");
+        $("lsFb").innerHTML="<div class='feedback bad'>"+(denied?"Нет доступа к микрофону. Разреши его в настройках Safari, или оцени себя сам:":"Не расслышал, попробуй ещё раз. Или оцени себя сам:")+"</div>"+
+          "<div class='toolbar'><button class='btn-ghost' id='lsSelfOk'>Получилось ✓</button><button class='btn-ghost' id='lsSelfNo'>Ещё потренирую</button></div><div id='lsFb2'></div>";
+        $("lsSelfOk").onclick=function(){ grade(true); $("lsFb2").innerHTML=nextBtn(); bindNext(); };
+        $("lsSelfNo").onclick=function(){ grade(false); $("lsFb2").innerHTML=nextBtn(); bindNext(); };
+      };
+      rec.onend=function(){ if(!done && mic.disabled){ mic.disabled=false; mic.textContent="🎤 Говорить"; } };
+      try{ rec.start(); }catch(e){ mic.disabled=false; mic.textContent="🎤 Говорить"; }
+    };
+  }
+
+  function finish(){
+    $("lessonBar").style.width="100%";
+    const pct=exTotal?Math.round(exOK/exTotal*100):100;
+    const prev=LP[L.id]||{};
+    LP[L.id]={ done:true, ok:Math.max(exOK, prev.ok||0), total:exTotal, pct:Math.max(pct, prev.pct||0), date:todayStr() };
+    lsave();
+    // продукция урока → в колоду повторения (только при первом прохождении добавит новое)
+    let addedSrs=0; try{ if(window.addLessonCards) addedSrs=addLessonCards(L.id, L.srs||[]); }catch(e){}
+    const c=$("lessonCard");
+    c.innerHTML=
+      "<div class='center'><div style='font-size:44px'>"+(pct>=80?"🎉":"💪")+"</div>"+
+      "<div class='step-title' style='text-align:center'>Урок пройден: "+L.title+"</div>"+
+      "<div class='muted'>Точность: <b>"+pct+"%</b> ("+exOK+" из "+exTotal+")</div></div>"+
+      "<div style='margin-top:16px'><b>🔑 Ключевые фразы урока — прогони их вслух ещё раз:</b>"+
+      (addedSrs?" <span class='muted'>(+"+addedSrs+" в повторение)</span>":"")+"<div id='lsSrs' style='margin-top:8px'></div></div>"+
+      (pct<80?"<div class='note' style='margin-top:10px'>Меньше 80% — стоит прогнать урок ещё раз через день-два.</div>":"")+
+      "<div class='toolbar'><button class='btn-primary' id='lsDone'>К списку уроков</button></div>";
+    const box=c.querySelector("#lsSrs");
+    (L.srs||[]).forEach(function(p){
+      const d=document.createElement("div"); d.className="srsline";
+      d.innerHTML="<span class='plspk'>"+p[0]+"</span> — "+p[1];
+      box.appendChild(d);
+    });
+    bindSpk(c);
+    $("lsDone").onclick=showLessons;
+  }
+
+  /* --- список уроков --- */
+  function renderList(){
+    const root=$("lessonsList"); root.innerHTML="";
+    WEEKS.forEach(function(w){
+      const wl=LESSONS.filter(function(l){return l.week===w.n;});
+      const doneN=wl.filter(function(l){return LP[l.id]&&LP[l.id].done;}).length;
+      const hd=document.createElement("div"); hd.className="card";
+      hd.innerHTML="<div class='row'><b style='font-size:17px'>"+w.title+"</b><span class='muted'>"+doneN+"/"+wl.length+"</span></div>"+
+        "<div class='muted' style='font-size:13px;margin-top:6px'>"+w.desc+"</div>"+
+        "<div class='note'>Ритм: тренажёр — каждый будний день, уроки — Пн/Ср/Пт поверх тренажёра.</div>";
+      root.appendChild(hd);
+      wl.forEach(function(l){
+        const p=LP[l.id];
+        const card=document.createElement("div"); card.className="card";
+        card.innerHTML=
+          "<div class='lesson-item'><div class='info'>"+
+          "<span class='tag'>"+l.day+" · ~"+l.mins+" мин</span>"+
+          "<div class='title'>"+l.title+"</div>"+
+          "<div class='meta'>"+(p&&p.done? "Пройден "+p.date+" · точность "+p.pct+"%" : "Цель: "+l.goal)+"</div>"+
+          "</div><div class='st'>"+(p&&p.done?"✅":"▶️")+"</div></div>"+
+          "<div class='toolbar'><button class='"+(p&&p.done?"btn-ghost":"btn-primary")+"' data-id='"+l.id+"'>"+(p&&p.done?"Повторить урок":"Начать урок")+"</button></div>";
+        card.querySelector("button[data-id]").onclick=function(){ startLessonById(l.id); };
+        root.appendChild(card);
+      });
+    });
+  }
+})();
+</script>
+<script src="sobes.js"></script>
+<script>
+/* ============================ PWA ============================ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
