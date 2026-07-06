@@ -218,6 +218,12 @@
       <div class="toolbar"><button class="btn-ghost" id="openProgramBtn">Открыть программу →</button></div>
     </div>
 
+    <div class="card" id="cloudCard">
+      <div class="row"><b>☁️ Синхронизация</b><span class="muted" id="cloudStatus">…</span></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 4px" id="cloudDesc"></div>
+      <div class="toolbar" id="cloudBtns"></div>
+    </div>
+
     <div class="card links">
       <b style="color:var(--text)">Опора недели:</b><br>
       Курс «Польски Вайб» (онлайн) · офлайн-школа (в поиске) · видео
@@ -727,6 +733,20 @@ function nextCard(){
   if(card.reps===0) renderFlash(card);
   else if(card.reps<=2) renderChoice(card);
   else renderType(card);
+  addHardBtn(card);
+}
+
+/* Отметка «сложное» (§4.2): звёздочка на карточке. Помеченные слова
+   доступны отдельной выборкой «Сложные» на экране «Практика». */
+function addHardBtn(card){
+  const c=$("drillCard"); c.style.position="relative";
+  const b=document.createElement("button");
+  b.className="btn-ghost smallbtn";
+  b.style.cssText="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:12px";
+  const paint=()=>{ b.textContent=(card.hard?"★":"☆")+" сложное"; b.style.color=card.hard?"var(--warn)":"var(--muted)"; };
+  paint();
+  b.onclick=()=>{ card.hard=!card.hard; save(); paint(); };
+  c.appendChild(b);
 }
 function advance(card, grade){
   review(card, grade);
@@ -1385,6 +1405,10 @@ renderHome();
 })();
 </script>
 <script src="sobes.js"></script>
+<!-- Облако (Фаза 3): настройки, синхронизация, вход Google -->
+<script src="config.js"></script>
+<script src="sync.js"></script>
+<script src="auth.js"></script>
 <script>
 /* ============================ PWA ============================ */
 if("serviceWorker" in navigator){
