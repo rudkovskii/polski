@@ -1,18 +1,21 @@
 /* Service worker: офлайн-кэш приложения */
 /* При каждом релизе поднимай версию (polski-v4, v5…), чтобы у пользователя
    обновился офлайн-кэш и не «залипал» старый код. */
-const CACHE = "polski-v8";
+const CACHE = "polski-v9";
 const ASSETS = [
   "./",
   "./index.html",
+  "./favicon.svg",
   "./data/days.js",
   "./data/vocab.js",
   "./data/curriculum.js",
+  "./data/karta_cards.js",
   "./srs.js",
   "./store.js",
   "./practice.js",
   "./lessons.js",
   "./program.js",
+  "./karta.js",
   "./sobes.js",
   "./config.js",
   "./sync.js",

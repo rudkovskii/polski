@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Polski — уроки и тренажёр</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0f1115">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -218,6 +219,12 @@
       <div class="toolbar"><button class="btn-ghost" id="openProgramBtn">Открыть программу →</button></div>
     </div>
 
+    <div class="card">
+      <div class="row"><b>📓 Тетрадка из Карты поляка</b><span class="muted" id="kartaHomeStat">нет данных</span></div>
+      <div class="muted" style="font-size:13px;margin:6px 0 4px">Вопросы, которые ты отметил «в тетрадку» в проекте «Карта поляка» — можно повторять прямо здесь (подтягиваются из твоего аккаунта).</div>
+      <div class="toolbar"><button class="btn-ghost" id="openKartaBtn">Открыть тетрадку →</button></div>
+    </div>
+
     <div class="card" id="cloudCard">
       <div class="row"><b>☁️ Синхронизация</b><span class="muted" id="cloudStatus">…</span></div>
       <div class="muted" style="font-size:13px;margin:6px 0 4px" id="cloudDesc"></div>
@@ -274,6 +281,15 @@
       <div class="toolbar"><button class="btn-primary" id="sumHome">На главную</button></div>
       <div class="note" id="sumNote"></div>
     </div>
+  </section>
+
+  <!-- ТЕТРАДКА ИЗ КАРТЫ ПОЛЯКА (кросс-проектная) -->
+  <section id="karta" class="hidden">
+    <div id="kartaCard"></div>
+  </section>
+  <section id="kartaPlay" class="hidden">
+    <div class="progress-thin"><i id="kartaBar"></i></div>
+    <div class="card" id="kartaPlayCard"></div>
   </section>
 
   <!-- ПРОГРАММА МЕСЯЦА (Фаза 2) -->
@@ -466,6 +482,7 @@
 <script src="data/days.js"></script>
 <script src="data/vocab.js"></script>
 <script src="data/curriculum.js"></script>
+<script src="data/karta_cards.js"></script>
 <script src="srs.js"></script>
 <script src="store.js"></script>
 <script>
@@ -592,6 +609,7 @@ const $=id=>document.getElementById(id);
 const SCREENS = {
   home:"trainer", immersion:"trainer", drill:"trainer", summary:"trainer", map:"trainer",
   practice:"trainer", practicePlay:"trainer", program:"trainer", dialog:"trainer",
+  karta:"trainer", kartaPlay:"trainer",
   lessons:"lessons", lessonPlay:"lessons",
   sobesHome:"sobes", sobesDrill:"sobes"
 };
@@ -1115,6 +1133,7 @@ renderHome();
 <script src="practice.js"></script>
 <script src="lessons.js"></script>
 <script src="program.js"></script>
+<script src="karta.js"></script>
 <script>
 /* ============================ ДВИЖОК УРОКОВ ============================ */
 (function(){

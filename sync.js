@@ -66,6 +66,20 @@ window.CloudSync = (function () {
     }, 5000);
   }
 
+  // Читаем «тетрадку» и «свои карточки» из проекта Карты поляка (таблица docs
+  // того же Supabase) — только чтение, ничего там не меняем. Показ — в разделе «Тетрадка».
+  function pullKarta() {
+    if (!client || !user || !window.Karta) return;
+    Promise.all([
+      client.from("docs").select("data").eq("user_id", user.id).eq("key", "notebook").maybeSingle(),
+      client.from("docs").select("data").eq("user_id", user.id).eq("key", "custom").maybeSingle()
+    ]).then(function (res) {
+      var nb = res[0] && res[0].data ? res[0].data.data : null;   // строка docs: {data: <jsonb>}
+      var cu = res[1] && res[1].data ? res[1].data.data : null;
+      Karta.setData({ marks: Array.isArray(nb) ? nb : [], custom: Array.isArray(cu) ? cu : [] });
+    }).catch(function () { /* нет доступа/сети — покажем прошлую сохранённую тетрадку */ });
+  }
+
   function start(c, u) {
     client = c; user = u;
     Store.progress.userId = u.id;
@@ -74,6 +88,7 @@ window.CloudSync = (function () {
       if (dirty) push().catch(function () {});
     });
     initial();
+    pullKarta();
   }
 
   function stop() {
