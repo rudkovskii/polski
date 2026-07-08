@@ -17,7 +17,7 @@ window.CloudSync = (function () {
   function hhmm() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
 
   function pull() {
-    return client.from("progress").select("data,updated_at")
+    return client.from("trainer_progress").select("data,updated_at")
       .eq("user_id", user.id).maybeSingle()
       .then(function (r) { if (r.error) throw r.error; return r.data; });
   }
@@ -25,7 +25,7 @@ window.CloudSync = (function () {
   function push() {
     var payload = Store.export();
     payload.userId = user.id;
-    return client.from("progress").upsert({
+    return client.from("trainer_progress").upsert({
       user_id: user.id, data: payload, updated_at: new Date().toISOString()
     }).then(function (r) {
       if (r.error) throw r.error;

@@ -1,76 +1,46 @@
-# Настройка синхронизации (Supabase) — по шагам, без терминала
+# Синхронизация — уже почти включена
 
-Займёт ~10 минут. Всё делается кликами в браузере. После этого прогресс будет
-привязан к твоему Google-аккаунту и синхронизироваться между iPad и компьютером.
+Приложение переиспользует **твой существующий проект Supabase** (тот же, что у «Карты поляка»).
+Ключи уже вставлены в `config.js`, вход по **email + паролю** (тот же аккаунт, что там).
 
-## Шаг 1. Создать проект
+Осталось **одно действие** — создать отдельную таблицу под прогресс тренажёра,
+чтобы он не смешивался с данными «Карты поляка». 10 секунд, без терминала.
 
-1. Зайди на **supabase.com** → Sign in (можно через GitHub или Google).
-2. **New project**: имя `polski`, регион **EU (Central)** — ближе к Варшаве,
-   пароль базы — любой (сохрани в заметки, он больше не понадобится).
-3. Подожди 1–2 минуты, пока проект создаётся.
+## Единственный шаг: создать таблицу
 
-## Шаг 2. Создать таблицу прогресса
-
-1. В левом меню открой **SQL Editor** → **New query**.
-2. Вставь целиком блок ниже и нажми **Run**:
+1. Открой **supabase.com** → твой проект → в левом меню **SQL Editor** → **New query**.
+2. Вставь это целиком и нажми **Run**:
 
 ```sql
-create table public.progress (
+create table if not exists public.trainer_progress (
   user_id uuid primary key references auth.users(id) on delete cascade,
   data jsonb not null default '{}',
   updated_at timestamptz not null default now()
 );
-alter table public.progress enable row level security;
+alter table public.trainer_progress enable row level security;
 
-create policy "own row select" on public.progress
+drop policy if exists "own trainer select" on public.trainer_progress;
+drop policy if exists "own trainer insert" on public.trainer_progress;
+drop policy if exists "own trainer update" on public.trainer_progress;
+
+create policy "own trainer select" on public.trainer_progress
   for select using (auth.uid() = user_id);
-create policy "own row upsert" on public.progress
+create policy "own trainer insert" on public.trainer_progress
   for insert with check (auth.uid() = user_id);
-create policy "own row update" on public.progress
+create policy "own trainer update" on public.trainer_progress
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 ```
 
-Должно написать «Success». Это создало хранилище (одна строка на пользователя)
-и включило защиту: каждый видит только свои данные.
+Должно написать **Success**. Всё — таблица создана, защита включена (каждый видит только свои данные).
 
-## Шаг 3. Включить вход через Google
+## Проверка
 
-1. Левое меню → **Authentication** → **Sign In / Providers** → **Google** → Enable.
-2. Supabase попросит Client ID и Client Secret из Google Cloud. Прямо на этой
-   странице есть ссылка на официальный гайд — по нему:
-   - console.cloud.google.com → создать проект → OAuth consent screen (External) →
-     Credentials → Create OAuth client ID (Web application);
-   - в **Authorized redirect URIs** вставить URL, который показывает Supabase на
-     странице настройки Google-провайдера (вида `https://<проект>.supabase.co/auth/v1/callback`);
-   - скопировать Client ID и Client Secret обратно в Supabase → Save.
+1. Открой приложение: https://rudkovskiid-blip.github.io/polski/
+2. На главной в карточке «☁️ Синхронизация» введи **email и пароль** (тот же аккаунт, что в «Карте поляка») → **Войти**.
+3. Позанимайся на компьютере; открой на iPad, войди тем же аккаунтом — прогресс подтянется.
+   Статус («синхронизировано ЧЧ:ММ») виден в той же карточке.
 
-## Шаг 4. Указать адрес приложения
+## Если забыл пароль от того аккаунта
 
-1. **Authentication** → **URL Configuration**.
-2. **Site URL** = адрес приложения на GitHub Pages, например
-   `https://твой-логин.github.io/polski/`.
-3. В **Additional Redirect URLs** добавь тот же адрес.
-
-## Шаг 5. Вставить ключи в приложение
-
-1. **Settings** (шестерёнка) → **API**.
-2. Скопируй **Project URL** и ключ **anon public**.
-3. Открой файл `config.js` в этой папке и вставь оба значения между кавычек.
-4. Открой `sw.js` и подними версию кэша на 1 (например `polski-v6` → `polski-v7`).
-5. Загрузи оба файла на GitHub (commit + push, как обычно).
-
-## Готово — проверка
-
-1. Открой приложение по ссылке GitHub Pages.
-2. На главной в карточке «☁️ Синхронизация» появится кнопка **«Войти через Google»**.
-3. Войди на компьютере, позанимайся; открой на iPad, войди тем же Google —
-   прогресс подтянется. Статус синхронизации виден в той же карточке.
-
-## На заметку
-
-- Бесплатный тариф: 500 MB базы, 50 000 пользователей в месяц — запас гигантский.
-- Проект на бесплатном тарифе засыпает после ~7 дней без обращений; при ежедневных
-  занятиях это не грозит. Если уснул — кнопка Restore в дашборде.
-- Автобэкапов на free нет → кнопка «⬇ экспорт» в приложении остаётся твоим парашютом,
-  сохраняй файл раз в неделю.
+Supabase → твой проект → **Authentication** → **Users** → найди свой email → «…» → Reset password
+(или Send magic link). Регистрация в приложении закрыта специально — аккаунт один.

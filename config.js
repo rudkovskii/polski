@@ -1,13 +1,11 @@
 /* НАСТРОЙКИ ОБЛАКА (Supabase) — Фаза 3.
-   Пока поля пустые — приложение работает полностью локально (офлайн-first),
-   карточка «Синхронизация» на главной подскажет, что облако не настроено.
+   Проект переиспользован от «Карты поляка» (polski-trener).
+   Вход по email/паролю (регистрация закрыта — аккаунт уже есть).
+   Данные тренажёра лежат в отдельной таблице trainer_progress.
 
-   Чтобы включить вход через Google и синхронизацию iPad ↔ компьютер:
-   1. Пройди по шагам из файла SETUP_SUPABASE.md (10 минут, без терминала).
-   2. Вставь сюда два значения из дашборда Supabase (Settings → API).
-   Эти ключи НЕ секретные (anon public) — их можно хранить в репозитории,
-   безопасность обеспечивает Row Level Security на сервере. */
+   Ключ anon (публичный) не секретный — безопасность обеспечивает
+   Row Level Security на сервере. */
 window.POLSKI_CONFIG = {
-  SUPABASE_URL: "",        // например: "https://abcdefgh.supabase.co"
-  SUPABASE_ANON_KEY: ""    // длинный ключ "anon public" из Settings → API
+  SUPABASE_URL: "https://uxlzblyzdyjizxrbmoxj.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_eYwVVA4z4B0j2hHe8qHefg_3N89lRB0"
 };
