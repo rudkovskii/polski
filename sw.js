@@ -1,7 +1,7 @@
 /* Service worker: офлайн-кэш приложения */
 /* При каждом релизе поднимай версию (polski-v4, v5…), чтобы у пользователя
    обновился офлайн-кэш и не «залипал» старый код. */
-const CACHE = "polski-v7";
+const CACHE = "polski-v8";
 const ASSETS = [
   "./",
   "./index.html",

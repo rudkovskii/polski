@@ -12,7 +12,16 @@ window.CloudSync = (function () {
 
   function status(txt, tone) {
     var el = document.getElementById("cloudStatus");
-    if (el) { el.textContent = txt; el.style.color = tone === "ok" ? "var(--good)" : ""; }
+    if (el) { el.textContent = txt; el.style.color = tone === "ok" ? "var(--good)" : (tone === "warn" ? "var(--warn)" : ""); }
+  }
+  // «таблицы ещё нет» — не сеть виновата, а не выполнен SQL из SETUP_SUPABASE.md
+  function isMissingTable(e) {
+    return e && (e.code === "PGRST205" || e.code === "42P01" ||
+      (e.message && e.message.indexOf("trainer_progress") >= 0));
+  }
+  function handleErr(e) {
+    if (isMissingTable(e)) { status("создай таблицу trainer_progress (см. SETUP_SUPABASE.md)", "warn"); }
+    else { dirty = true; status("офлайн — сохраню при появлении сети"); }
   }
   function hhmm() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
 
@@ -44,7 +53,7 @@ window.CloudSync = (function () {
         if (Store.import(row.data)) { location.reload(); return; }
       }
       return push(); // локальное новее / облако пустое → заливаем наше
-    }).catch(function () { dirty = true; status("офлайн — сохраню при появлении сети"); });
+    }).catch(handleErr);
   }
 
   /* Дебаунс-отправка после каждого сохранения прогресса. */
@@ -53,7 +62,7 @@ window.CloudSync = (function () {
     dirty = true; status("есть несохранённые изменения…");
     clearTimeout(timer);
     timer = setTimeout(function () {
-      push().catch(function () { status("офлайн — сохраню при появлении сети"); });
+      push().catch(handleErr);
     }, 5000);
   }
 
@@ -78,7 +87,7 @@ window.CloudSync = (function () {
     if (!client || !user) return;
     clearTimeout(timer);
     status("синхронизация…");
-    push().catch(function () { status("офлайн — попробуй позже"); });
+    push().catch(handleErr);
   }
 
   return { start: start, stop: stop, now: now };
