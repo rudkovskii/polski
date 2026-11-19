@@ -1,7 +1,7 @@
 /* Service worker: офлайн-кэш приложения */
 /* При каждом релизе поднимай версию (polski-v4, v5…), чтобы у пользователя
    обновился офлайн-кэш и не «залипал» старый код. */
-const CACHE = "polski-v9";
+const CACHE = "polski-v10";
 const ASSETS = [
   "./",
   "./index.html",
@@ -17,9 +17,6 @@ const ASSETS = [
   "./program.js",
   "./karta.js",
   "./sobes.js",
-  "./config.js",
-  "./sync.js",
-  "./auth.js",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -46,9 +43,6 @@ self.addEventListener("activate", e => {
 /* stale-while-revalidate: отдаём из кэша, в фоне обновляем */
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
-  /* Облако (Supabase) не кэшируем — только живая сеть, иначе синхронизация
-     будет отдавать устаревшие данные (§8.4 ТЗ). */
-  if (e.request.url.includes("supabase.co")) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fresh = fetch(e.request).then(res => {

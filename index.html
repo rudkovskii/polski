@@ -221,14 +221,8 @@
 
     <div class="card">
       <div class="row"><b>📓 Тетрадка из Карты поляка</b><span class="muted" id="kartaHomeStat">нет данных</span></div>
-      <div class="muted" style="font-size:13px;margin:6px 0 4px">Вопросы, которые ты отметил «в тетрадку» в проекте «Карта поляка» — можно повторять прямо здесь (подтягиваются из твоего аккаунта).</div>
+      <div class="muted" style="font-size:13px;margin:6px 0 4px">Вопросы, которые ты раньше отметил «в тетрадку» в проекте «Карта поляка» (сохранённые на этом устройстве).</div>
       <div class="toolbar"><button class="btn-ghost" id="openKartaBtn">Открыть тетрадку →</button></div>
-    </div>
-
-    <div class="card" id="cloudCard">
-      <div class="row"><b>☁️ Синхронизация</b><span class="muted" id="cloudStatus">…</span></div>
-      <div class="muted" style="font-size:13px;margin:6px 0 4px" id="cloudDesc"></div>
-      <div class="toolbar" id="cloudBtns"></div>
     </div>
 
     <div class="card links">
@@ -1424,10 +1418,6 @@ renderHome();
 })();
 </script>
 <script src="sobes.js"></script>
-<!-- Облако (Фаза 3): настройки, синхронизация, вход Google -->
-<script src="config.js"></script>
-<script src="sync.js"></script>
-<script src="auth.js"></script>
 <script>
 /* ============================ PWA ============================ */
 if("serviceWorker" in navigator){

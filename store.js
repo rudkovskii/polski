@@ -48,8 +48,6 @@
   function saveNow() {
     progress.updatedAt = Date.now();
     try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) {}
-    // хук для облачной синхронизации (sync.js подписывается после входа)
-    try { if (typeof window.Store.onSaved === "function") window.Store.onSaved(); } catch (e) {}
   }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 400); }
 
